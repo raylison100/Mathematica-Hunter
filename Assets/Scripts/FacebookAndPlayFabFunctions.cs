@@ -11,11 +11,13 @@ using System;
 public class FacebookAndPlayFabFunctions : MonoBehaviour
 {
     //Title Id do seu jogo no site do PlayFab
-    public string gameTitleId = "";
+    public string gameTitleId = "Mathematics Hunter";
 
     List<StatisticUpdate> statsList = new List<StatisticUpdate>();
 
     private StatisticUpdate stats;
+
+    public Button ButtonFacebookLogin;
 
     void Start()
     {
@@ -23,6 +25,15 @@ public class FacebookAndPlayFabFunctions : MonoBehaviour
         FB.Init(InitCallback, null, null);
         //Usado para indicar ao sdk do PlayFab o Id do seu jogo.
         PlayFabSettings.TitleId = gameTitleId;
+    }
+       
+    void Update()
+    {
+        if (!FacebookAndPlayFabInfo.isLoggedOnPlayFab)
+        {
+            ButtonFacebookLogin.gameObject.SetActive(false);
+        }
+
     }
 
     private void InitCallback()
