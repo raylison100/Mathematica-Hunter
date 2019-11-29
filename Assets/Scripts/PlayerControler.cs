@@ -5,92 +5,99 @@ using UnityEngine;
 public class PlayerControler : MonoBehaviour
 {
 
-    public float velocidade;
-
-    public Transform    Player;
-    public Animator     Animator;
-    public Rigidbody2D  PlayerRigidbody;
-
-    public int          forceJump;
-    public bool         slide;
-
-    //Chao
-    public bool         grounded;
-    public LayerMask    whatIsGround;
-    public Transform    GroundCheck;
-
-    //slide
-    public  float       slideTemp;
-    private float       timeTemp;
-
-    //colisor
-    public Transform   colisor;
-    
+    public bool face = true;
+    public Transform heroiT;
+    public float vel = 2.5f;
+    public float force = 5f;
+    public Rigidbody2D heroiRB;
+    public bool liberaPulo = false;
+    public Animator anim;
+    public bool vivo = true;
 
     // Start is called before the first frame update
     void Start()
     {
-        Animator = Player.GetComponent<Animator>();
+        heroiT = GetComponent<Transform>();
+        heroiRB = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>(); 
     }
 
     // Update is called once per frame
     void Update()
-    {
-        Movimentar();
+    {         
+        
+        if(Input.GetKey(KeyCode.LeftArrow) && !face)
+        {
+            Flip();
+        }
+        else if (Input.GetKey(KeyCode.RightArrow) && face)
+        {
+            Flip();
+        }
+        if (vivo)
+        {
+            Movimentar();
+        }
+        
     }
 
     void Movimentar()
     {
-
-        Animator.SetFloat("Run", Mathf.Abs(Input.GetAxis("Horizontal")));
-
-        if (Input.GetAxisRaw("Horizontal") > 0)
+        if(Input.GetKey(KeyCode.RightArrow))
         {
-            transform.Translate(Vector2.right * velocidade * Time.deltaTime);
-            transform.eulerAngles = new Vector2(0, 0);
+            transform.Translate(new Vector2(vel * Time.deltaTime, 0));
+            anim.SetBool("idle", false);
+            anim.SetBool("correr", true);
         }
 
-        if (Input.GetAxisRaw("Horizontal") < 0)
+        else if (Input.GetKey(KeyCode.LeftArrow))
         {
-            transform.Translate(Vector2.right * velocidade * Time.deltaTime);
-            transform.eulerAngles = new Vector2(0, 180);
+            transform.Translate(new Vector2(-vel * Time.deltaTime, 0));
+            anim.SetBool("idle", false);
+            anim.SetBool("correr", true);
+        }
+        else
+        {
+            anim.SetBool("idle", true);
+            anim.SetBool("correr", false);
         }
 
-        if (Input.GetButtonDown("Jump") && grounded)
+        if (Input.GetKey(KeyCode.Space) && liberaPulo)
         {
-            PlayerRigidbody.AddForce(new Vector2(velocidade, forceJump));
-            if (slide)
-            {
-                colisor.position = new Vector3(colisor.position.x, colisor.position.y + 1.73f, colisor.position.z);
-                slide = false;
-            }
+            heroiRB.AddForce(new Vector2(0, force), ForceMode2D.Impulse);
+            anim.SetBool("idle", false);
+            anim.SetBool("pular", true);
+        }
+        else
+        {
+            anim.SetBool("idle", true);
+            anim.SetBool("pular", false);
         }
 
-        if (Input.GetButtonDown("Slide") && grounded)
+    }
+
+    void Flip()
+    {
+        face = !face;
+        Vector3 scala = heroiT.localScale;
+        scala.x *= -1;
+        heroiT.localScale = scala;
+
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Chao"))
         {
-            if (!slide)
-            {
-                colisor.position = new Vector3(colisor.position.x, colisor.position.y - 1.73f, colisor.position.z);
-            }
-           
-            slide = true;
-            timeTemp = 0;
+            liberaPulo = true;
         }
+    }
 
-        grounded = Physics2D.OverlapCircle(GroundCheck.position, 0.2f, whatIsGround);
-
-        if (slide)
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Chao"))
         {
-            timeTemp += Time.deltaTime;
-            if(timeTemp >= slideTemp)
-            {
-                colisor.position = new Vector3(colisor.position.x, colisor.position.y + 1.73f, colisor.position.z);
-                slide = false;
-            }
+            liberaPulo = false;
         }
-
-
-        Animator.SetBool("Jump", !grounded);
-        Animator.SetBool("Slide", slide);
     }
 }
