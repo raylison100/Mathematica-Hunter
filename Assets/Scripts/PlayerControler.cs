@@ -4,74 +4,92 @@ using UnityEngine;
 
 public class PlayerControler : MonoBehaviour
 {
-
+    [SerializeField]
+    private float pulo = 6.0f;
+    private Rigidbody2D rb;
     public bool face = true;
-    public Transform heroiT;
-    public float vel = 2.5f;
-    public float force = 5f;
-    public Rigidbody2D heroiRB;
-    public bool liberaPulo = false;
-    public Animator anim;
-    public bool vivo = true;
+    [Range(1, 20)]
+    public float maxSpeed = 5f;
+    public float move;
+
+    public bool nochao;
+    public Transform nochaoCheck;
+    public float nochaoRaio = 0.02f;
+    public LayerMask oqueEChao;
+    [Range(1, 20)]
+    private float jumpForce = 30f;
+
+    public Animator animH;
+
+    [SerializeField]
+    private bool clickPulo = false;
+
+    [SerializeField]
+    private bool clickSlide = false;
+
+
+
+
 
     // Start is called before the first frame update
     void Start()
     {
-        heroiT = GetComponent<Transform>();
-        heroiRB = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>(); 
+        rb = GetComponent<Rigidbody2D>();
+        animH = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
-    {         
-        
-        if(Input.GetKey(KeyCode.LeftArrow) && !face)
+    {
+        if (nochao && this.clickPulo)
         {
-            Flip();
+            rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+            this.clickPulo = false;
         }
-        else if (Input.GetKey(KeyCode.RightArrow) && face)
+
+        //Animar andar
+
+        if(nochao)
         {
-            Flip();
+            animH.SetFloat("x", Mathf.Abs(move));
         }
-        if (vivo)
-        {
-            Movimentar();
-        }
-        
+
+        //animar pulo
+
+        animH.SetBool("chao", nochao);
+   
     }
 
-    void Movimentar()
+
+    private void OnDrawGizmos()
     {
-        if(Input.GetKey(KeyCode.RightArrow))
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(nochaoCheck.position, nochaoRaio);
+    }
+
+    private void FixedUpdate()
+    {
+        nochao = Physics2D.OverlapCircle(nochaoCheck.position, nochaoRaio, oqueEChao);
+
+        if (rb.velocity.y > 0 && !this.clickPulo)
         {
-            transform.Translate(new Vector2(vel * Time.deltaTime, 0));
-            anim.SetBool("idle", false);
-            anim.SetBool("correr", true);
+            rb.gravityScale = pulo;
+        }else
+        {
+            rb.gravityScale = 1;
         }
 
-        else if (Input.GetKey(KeyCode.LeftArrow))
+        //
+        if (nochao)
         {
-            transform.Translate(new Vector2(-vel * Time.deltaTime, 0));
-            anim.SetBool("idle", false);
-            anim.SetBool("correr", true);
-        }
-        else
-        {
-            anim.SetBool("idle", true);
-            anim.SetBool("correr", false);
+            rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
         }
 
-        if (Input.GetKey(KeyCode.Space) && liberaPulo)
+        if(move > 0 && !face){
+            Flip();
+        }else if (move < 0 && face)
         {
-            heroiRB.AddForce(new Vector2(0, force), ForceMode2D.Impulse);
-            anim.SetBool("idle", false);
-            anim.SetBool("pular", true);
-        }
-        else
-        {
-            anim.SetBool("idle", true);
-            anim.SetBool("pular", false);
+            Flip();
         }
 
     }
@@ -79,25 +97,33 @@ public class PlayerControler : MonoBehaviour
     void Flip()
     {
         face = !face;
-        Vector3 scala = heroiT.localScale;
-        scala.x *= -1;
-        heroiT.localScale = scala;
-
+        Vector3 tempScale = transform.localScale;
+        tempScale.x *= -1;
+        transform.localScale = tempScale;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void Direita()
     {
-        if(collision.gameObject.CompareTag("Chao"))
-        {
-            liberaPulo = true;
-        }
+        this.move = 2;
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    public void Pular()
     {
-        if (collision.gameObject.CompareTag("Chao"))
-        {
-            liberaPulo = false;
-        }
+        this.clickPulo = true;
+    }
+
+    public void Deslisar()
+    {
+        this.clickSlide = true;
+    }
+
+    public void Esquerda()
+    {
+        this.move = -2;
+    }
+
+    public void Parado()
+    {
+        this.move = 0;
     }
 }
