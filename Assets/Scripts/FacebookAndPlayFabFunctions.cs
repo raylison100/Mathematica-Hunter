@@ -11,7 +11,7 @@ using System;
 public class FacebookAndPlayFabFunctions : MonoBehaviour
 {
     //Title Id do seu jogo no site do PlayFab
-    public string gameTitleId = "Mathematics Hunter";
+    public string gameTitleId = "";
 
     List<StatisticUpdate> statsList = new List<StatisticUpdate>();
 
@@ -29,7 +29,7 @@ public class FacebookAndPlayFabFunctions : MonoBehaviour
        
     void Update()
     {
-        if (!FacebookAndPlayFabInfo.isLoggedOnPlayFab)
+        if (FacebookAndPlayFabInfo.isLoggedOnPlayFab)
         {
             ButtonFacebookLogin.gameObject.SetActive(false);
         }
