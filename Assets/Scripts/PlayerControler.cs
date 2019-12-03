@@ -14,19 +14,16 @@ public class PlayerControler : MonoBehaviour
 
     public bool nochao;
     public Transform nochaoCheck;
-    public float nochaoRaio = 0.1f;
+    private Collider2D playerCollider;
+    private float nochaoRaio = 1f;
     public LayerMask oqueEChao;
     [Range(1, 20)]
     private float jumpForce = 30f;
 
     public Animator animH;
 
-    [SerializeField]
-    private bool clickPulo = false;
-
-    [SerializeField]
-    private bool clickSlide = false;
     private float timeSlide = 0f;
+    private bool deslizando = false;
 
 
 
@@ -37,35 +34,25 @@ public class PlayerControler : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animH = GetComponent<Animator>();
+        playerCollider = GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(nochao);
-
-        if (nochao && this.clickPulo)
-        {
-            this.clickPulo = false;
-            rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
-            animH.SetBool("chao", nochao);
-
-        }
-
-        animH.SetFloat("x", Mathf.Abs(move));
-
-        if (nochao && this.clickSlide)
-        {
-            animH.SetBool("slide", true);
-            this.timeSlide = 4f;
-        }
+        //anadar e correr
+        animH.SetFloat("x", Mathf.Abs(move));      
+        // pular
+        animH.SetBool("chao", nochao); 
+        //deslizar
+        animH.SetBool("slider", deslizando);
 
         this.timeSlide -= Time.deltaTime;
 
         if(this.timeSlide <= 0)
         {
-            this.clickSlide = false;
-            animH.SetBool("slide", false);
+            deslizando = false;
+            playerCollider.offset = new Vector2(playerCollider.offset.x,-0.055f);
         }
 
     }
@@ -75,7 +62,7 @@ public class PlayerControler : MonoBehaviour
     {
         nochao = Physics2D.OverlapCircle(nochaoCheck.position, nochaoRaio, oqueEChao);
 
-        if (rb.velocity.y > 0 && !this.clickPulo)
+        if (rb.velocity.y > 0)
         {
             rb.gravityScale = pulo;
         }else
@@ -105,20 +92,10 @@ public class PlayerControler : MonoBehaviour
         tempScale.x *= -1;
         transform.localScale = tempScale;
     }
-
+    
     public void Direita()
     {
         this.move = 1;
-    }
-
-    public void Pular()
-    {
-        this.clickPulo = true;
-    }
-
-    public void Deslisar()
-    {
-        this.clickSlide = true;
     }
 
     public void Esquerda()
@@ -129,5 +106,25 @@ public class PlayerControler : MonoBehaviour
     public void Parado()
     {
         this.move = 0;
+    }
+
+    public void Pular()
+    {
+        if (nochao)
+        {
+            rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);            
+        }
+    }
+
+    public void Deslisar()
+    {
+        if (nochao && !deslizando)
+        {
+
+            //-0.05518246
+            playerCollider.offset = new Vector2(playerCollider.offset.x,0.66f);
+            deslizando = true;
+            this.timeSlide = 1f;
+        }
     }
 }

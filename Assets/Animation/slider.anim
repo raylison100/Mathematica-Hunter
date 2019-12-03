@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: slide
+  m_Name: slider
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -21,29 +21,29 @@ AnimationClip:
   - curve:
     - time: 0
       value: {fileID: 21300000, guid: e0c9016232dba564c85fe0ec786eeeba, type: 3}
-    - time: 0.05
+    - time: 0.11111111
       value: {fileID: 21300000, guid: e6d7014b19373fd4aaa89879b5cb2fcf, type: 3}
-    - time: 0.1
+    - time: 0.22222222
       value: {fileID: 21300000, guid: 5cbb5a4365212d84caea7fc2a49fb829, type: 3}
-    - time: 0.15
+    - time: 0.33333334
       value: {fileID: 21300000, guid: c8a40dd9664f11546bf0e5c73bac3c7d, type: 3}
-    - time: 0.2
+    - time: 0.44444445
       value: {fileID: 21300000, guid: 3807f497ef2e83b4d96cb31c3f9692d0, type: 3}
-    - time: 0.25
+    - time: 0.5555556
       value: {fileID: 21300000, guid: 68a2a6807a2f7d248a2fc88ce8952133, type: 3}
-    - time: 0.3
+    - time: 0.6666667
       value: {fileID: 21300000, guid: 99ec0277e5219134681804846502c128, type: 3}
-    - time: 0.35
+    - time: 0.7777778
       value: {fileID: 21300000, guid: 6b5c3ec6197b75a4aab798b5d9dc746a, type: 3}
-    - time: 0.4
+    - time: 0.8888889
       value: {fileID: 21300000, guid: 98bc0c73a400c7440bf7081d427aa6e9, type: 3}
-    - time: 0.45
+    - time: 1
       value: {fileID: 21300000, guid: c14b9002b815d9540ad74df8a9a466e6, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
-  m_SampleRate: 20
+  m_SampleRate: 9
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -73,7 +73,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.5
+    m_StopTime: 1.1111112
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
