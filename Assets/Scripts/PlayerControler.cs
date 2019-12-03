@@ -14,7 +14,7 @@ public class PlayerControler : MonoBehaviour
 
     public bool nochao;
     public Transform nochaoCheck;
-    public float nochaoRaio = 0.02f;
+    public float nochaoRaio = 0.1f;
     public LayerMask oqueEChao;
     [Range(1, 20)]
     private float jumpForce = 30f;
@@ -26,6 +26,7 @@ public class PlayerControler : MonoBehaviour
 
     [SerializeField]
     private bool clickSlide = false;
+    private float timeSlide = 0f;
 
 
 
@@ -41,31 +42,34 @@ public class PlayerControler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(nochao);
+
         if (nochao && this.clickPulo)
         {
-            rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
             this.clickPulo = false;
+            rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+            animH.SetBool("chao", nochao);
+
         }
 
-        //Animar andar
+        animH.SetFloat("x", Mathf.Abs(move));
 
-        if(nochao)
+        if (nochao && this.clickSlide)
         {
-            animH.SetFloat("x", Mathf.Abs(move));
+            animH.SetBool("slide", true);
+            this.timeSlide = 4f;
         }
 
-        //animar pulo
+        this.timeSlide -= Time.deltaTime;
 
-        animH.SetBool("chao", nochao);
-   
+        if(this.timeSlide <= 0)
+        {
+            this.clickSlide = false;
+            animH.SetBool("slide", false);
+        }
+
     }
 
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(nochaoCheck.position, nochaoRaio);
-    }
 
     private void FixedUpdate()
     {
@@ -104,7 +108,7 @@ public class PlayerControler : MonoBehaviour
 
     public void Direita()
     {
-        this.move = 2;
+        this.move = 1;
     }
 
     public void Pular()
@@ -119,7 +123,7 @@ public class PlayerControler : MonoBehaviour
 
     public void Esquerda()
     {
-        this.move = -2;
+        this.move = -1;
     }
 
     public void Parado()
