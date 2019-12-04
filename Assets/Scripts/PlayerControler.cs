@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerControler : MonoBehaviour
 {
@@ -25,8 +26,7 @@ public class PlayerControler : MonoBehaviour
     private float timeSlide = 0f;
     private bool deslizando = false;
 
-
-
+    private bool sairFase;
 
 
     // Start is called before the first frame update
@@ -35,6 +35,7 @@ public class PlayerControler : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animH = GetComponent<Animator>();
         playerCollider = GetComponent<Collider2D>();
+        sairFase = false;
     }
 
     // Update is called once per frame
@@ -55,6 +56,11 @@ public class PlayerControler : MonoBehaviour
             playerCollider.offset = new Vector2(playerCollider.offset.x,-0.055f);
         }
 
+
+        if (sairFase)
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 
 
@@ -70,10 +76,11 @@ public class PlayerControler : MonoBehaviour
             rb.gravityScale = 1;
         }
 
+        rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
         //
         if (nochao)
         {
-            rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
+            
         }
 
         if(move > 0 && !face){
@@ -82,7 +89,6 @@ public class PlayerControler : MonoBehaviour
         {
             Flip();
         }
-
     }
 
     void Flip()
@@ -125,6 +131,20 @@ public class PlayerControler : MonoBehaviour
             playerCollider.offset = new Vector2(playerCollider.offset.x,0.66f);
             deslizando = true;
             this.timeSlide = 1f;
+        }
+    }
+
+
+    public void Voltar()
+    {
+        sairFase = true;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("totem"))
+        {
+            this.move = 0;
         }
     }
 }

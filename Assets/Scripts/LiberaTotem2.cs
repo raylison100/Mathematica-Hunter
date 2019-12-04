@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LiberaTotem : MonoBehaviour
+public class LiberaTotem2 : MonoBehaviour
 {
-   
     public bool liberaPainel;
     public float time;
     public GameObject painel;
@@ -16,8 +14,8 @@ public class LiberaTotem : MonoBehaviour
 
     private bool acertou;
 
-      // Start is called before the first frame update
-      void Start()
+    // Start is called before the first frame update
+    void Start()
     {
         liberaPainel = false;
         time = 15;
@@ -29,7 +27,7 @@ public class LiberaTotem : MonoBehaviour
 
         painel.SetActive(liberaPainel);
 
-        if (liberaPainel && time > 0 )
+        if (liberaPainel && time > 0)
         {
             time -= Time.deltaTime;
             contador.text = time.ToString();
@@ -49,7 +47,7 @@ public class LiberaTotem : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.gameObject.CompareTag("totem1"))
+        if (other.gameObject.CompareTag("totem2"))
         {
             liberaPainel = true;
             Destroy(other.gameObject);
